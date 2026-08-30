@@ -1,0 +1,919 @@
+<!DOCTYPE html><html lang="en">  <head>    <meta charset="UTF-8">      <meta name="viewport" content="width=device-width,initial-scale=1.0">      
+<title>DEV•CART — Luxury Store</title><style>      
+*{box-sizing:border-box}      
+body{      
+margin:0;      
+font-family:Arial,sans-serif;      
+background:#07130e;      
+color:#fff;      
+}      
+button{cursor:pointer}  .header{    
+position:sticky;    
+top:0;    
+z-index:100;    
+display:flex;    
+align-items:center;    
+gap:12px;    
+padding:14px 5%;    
+background:#0b1712;    
+border-bottom:1px solid #c9a96a;    
+}  .logo{  
+font-size:25px;  
+font-weight:900;  
+white-space:nowrap;  
+color:#fff;  
+}  
+.logo span{color:#d7b56d}  .search{flex:1}
+.search input{
+width:100%;
+padding:13px 16px;
+border:1px solid #555;
+border-radius:25px;
+background:#14221b;
+color:white;
+outline:none;
+}
+.search input::placeholder{color:#aaa}
+
+.topBtn{
+border:1px solid #c9a96a;
+background:#111d17;
+color:white;
+padding:11px 14px;
+border-radius:22px;
+font-weight:bold;
+}
+
+.count{
+background:#c9a96a;
+color:#07130e;
+padding:2px 7px;
+border-radius:20px;
+}
+
+.hero{
+width:92%;
+margin:25px auto;
+min-height:390px;
+border-radius:25px;
+padding:50px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:
+radial-gradient(circle at 80% 30%,#c9a96a55,transparent 30%),
+linear-gradient(135deg,#10291d,#07130e);
+border:1px solid #c9a96a55;
+box-shadow:0 20px 60px #000;
+}
+
+.hero h1{
+font-size:52px;
+margin:0 0 15px;
+}
+.gold{color:#d7b56d}
+.hero p{
+color:#c7c7c7;
+font-size:17px;
+line-height:1.6;
+}
+
+.shopBtn{
+padding:14px 25px;
+border:0;
+border-radius:25px;
+background:#d7b56d;
+color:#07130e;
+font-weight:900;
+}
+
+.heroIcon{
+font-size:120px;
+filter:drop-shadow(0 0 25px #c9a96a);
+}
+
+.container{
+width:92%;
+max-width:1400px;
+margin:auto;
+}
+
+.section{
+margin:25px 0;
+padding:25px;
+border:1px solid #ffffff18;
+border-radius:18px;
+background:#0d1b14;
+}
+
+.section h2{
+margin-top:0;
+color:#d7b56d;
+}
+
+.categories{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+}
+
+.category{
+padding:20px 5px;
+text-align:center;
+border:1px solid #c9a96a44;
+border-radius:12px;
+background:#111f18;
+transition:.2s;
+}
+
+.category:hover{
+transform:translateY(-4px);
+border-color:#d7b56d;
+}
+
+.category div{
+font-size:32px;
+margin-bottom:8px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+}
+
+.product{
+position:relative;
+padding:12px;
+border:1px solid #ffffff15;
+border-radius:15px;
+background:#111e17;
+transition:.2s;
+}
+
+.product:hover{
+transform:translateY(-5px);
+border-color:#c9a96a;
+}
+
+.photo{
+height:190px;
+border-radius:11px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(145deg,#182c22,#08100c);
+font-size:75px;
+}
+
+.wish{
+position:absolute;
+right:10px;
+top:10px;
+z-index:2;
+width:38px;
+height:38px;
+border:1px solid #c9a96a;
+border-radius:50%;
+background:#0b1712;
+color:white;
+font-size:20px;
+}
+
+.product h3{
+font-size:15px;
+min-height:38px;
+}
+
+.rating{
+display:inline-block;
+background:#176b42;
+padding:4px 7px;
+border-radius:5px;
+font-size:11px;
+}
+
+.price{
+font-size:21px;
+font-weight:bold;
+margin-top:8px;
+color:#d7b56d;
+}
+
+.old{
+font-size:12px;
+color:#888;
+text-decoration:line-through;
+}
+
+.delivery{
+font-size:12px;
+color:#aaa;
+margin:7px 0;
+}
+
+.actions{
+display:flex;
+gap:6px;
+}
+
+.actions button{
+flex:1;
+padding:10px 4px;
+border:0;
+border-radius:7px;
+font-weight:bold;
+}
+
+.add{
+background:#d49a35;
+color:#111;
+}
+
+.buy{
+background:#176b42;
+color:white;
+}
+
+.panel{
+position:fixed;
+top:0;
+right:-430px;
+width:410px;
+max-width:92%;
+height:100vh;
+z-index:200;
+background:#0d1b14;
+border-left:1px solid #c9a96a;
+padding:20px;
+overflow:auto;
+transition:.3s;
+}
+
+.panel.open{right:0}
+
+.panelHead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #ffffff22;
+padding-bottom:12px;
+}
+
+.close{
+background:none;
+border:0;
+color:white;
+font-size:30px;
+}
+
+.cartItem,.wishItem{
+padding:15px 0;
+border-bottom:1px solid #ffffff18;
+}
+
+.qty button{
+padding:5px 10px;
+border:1px solid #777;
+background:#14221b;
+color:white;
+border-radius:5px;
+}
+
+.remove{
+border:0;
+background:none;
+color:#ff7777;
+margin-left:10px;
+}
+
+.total{
+font-size:22px;
+font-weight:bold;
+color:#d7b56d;
+margin-top:20px;
+}
+
+.checkoutBtn{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:0;
+border-radius:8px;
+background:#d7b56d;
+color:#07130e;
+font-weight:900;
+}
+
+.overlay{
+display:none;
+position:fixed;
+inset:0;
+background:#000b;
+z-index:150;
+}
+
+.overlay.show{display:block}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+z-index:300;
+align-items:center;
+justify-content:center;
+background:#000c;
+padding:15px;
+}
+
+.modal.show{display:flex}
+
+.modalBox{
+width:100%;
+max-width:430px;
+padding:25px;
+border-radius:16px;
+background:#0d1b14;
+border:1px solid #c9a96a;
+}
+
+.modalBox input,
+.modalBox textarea{
+width:100%;
+padding:13px;
+margin:7px 0;
+border:1px solid #555;
+border-radius:7px;
+background:#14221b;
+color:white;
+outline:none;
+}
+
+.goldBtn{
+width:100%;
+padding:13px;
+margin-top:8px;
+border:0;
+border-radius:7px;
+background:#d7b56d;
+color:#07130e;
+font-weight:bold;
+}
+
+footer{
+margin-top:30px;
+padding:40px 6%;
+background:#050b08;
+border-top:1px solid #c9a96a44;
+color:#aaa;
+text-align:center;
+}
+
+@media(max-width:1000px){
+.products{grid-template-columns:repeat(3,1fr)}
+.categories{grid-template-columns:repeat(3,1fr)}
+}
+
+@media(max-width:600px){
+.header{flex-wrap:wrap}
+.search{order:5;flex-basis:100%}
+.hero{
+padding:30px;
+min-height:300px;
+}
+.hero h1{font-size:37px}
+.heroIcon{font-size:70px}
+.products{grid-template-columns:repeat(2,1fr);gap:8px}
+.photo{height:150px}
+.categories{grid-template-columns:repeat(3,1fr)}
+.panel{width:380px}
+}
+</style></head><body><header class="header"><div class="logo">
+DEV<span>•CART</span>
+
+</div><div class="search">      
+<input      
+id="searchBox"      
+type="text"      
+placeholder="Search products..."      
+oninput="searchProducts()">      
+</div><button class="topBtn" onclick="openLogin()">👤 Login</button>  <button class="topBtn" onclick="openWishlist()">      
+♡ <span id="wishCount" class="count">0</span>      
+</button><button class="topBtn" onclick="openCart()">      
+🛒 <span id="cartCount" class="count">0</span>      
+</button></header><section class="hero"><div>      
+<h1>      
+Luxury.<br>      
+<span class="gold">Simply DEV•CART.</span>      
+</h1><p>      
+Premium products. Elegant experience.      
+<br>      
+🚚 Free Delivery All India      
+</p><button class="shopBtn" onclick="scrollProducts()">      
+SHOP NOW →      
+</button>      
+</div><div class="heroIcon">🌿🛍️</div></section><div class="container"><section class="section"><h2>SHOP BY CATEGORY</h2><div class="categories"><div class="category" onclick="filterCategory('Fitness')">      
+<div>💪</div>Fitness      
+</div><div class="category" onclick="filterCategory('Electronics')">      
+<div>📱</div>Electronics      
+</div><div class="category" onclick="filterCategory('Fashion')">      
+<div>👕</div>Fashion      
+</div><div class="category" onclick="filterCategory('Footwear')">      
+<div>👟</div>Footwear      
+</div><div class="category" onclick="filterCategory('Audio')">      
+<div>🎧</div>Audio      
+</div><div class="category" onclick="filterCategory('Home')">      
+<div>🏠</div>Home      
+</div></div>      
+</section><section class="section" id="products"><h2>🔥 TRENDING PRODUCTS</h2><div class="products"><div class="product" data-name="Creatine" data-category="Fitness"><button class="wish" onclick="toggleWish(this,'Creatine',699)">      
+♡      
+</button><div class="photo">💪</div><h3>Premium Creatine</h3>      
+<span class="rating">⭐ 4.5</span><div class="price">      
+₹699 <span class="old">₹999</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Premium Creatine',699)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Premium Creatine',699)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Wireless Earbuds" data-category="Audio"><button class="wish" onclick="toggleWish(this,'Wireless Earbuds',799)">      
+♡      
+</button><div class="photo">🎧</div><h3>Luxury Wireless Earbuds</h3>      
+<span class="rating">⭐ 4.4</span><div class="price">      
+₹799 <span class="old">₹1,499</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Luxury Wireless Earbuds',799)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Luxury Wireless Earbuds',799)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Smart Watch" data-category="Electronics"><button class="wish" onclick="toggleWish(this,'Smart Watch',999)">      
+♡      
+</button><div class="photo">⌚</div><h3>Premium Smart Watch</h3>      
+<span class="rating">⭐ 4.3</span><div class="price">      
+₹999 <span class="old">₹1,999</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Premium Smart Watch',999)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Premium Smart Watch',999)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Gym Bottle" data-category="Fitness"><button class="wish" onclick="toggleWish(this,'Gym Bottle',199)">      
+♡      
+</button><div class="photo">🍶</div><h3>Luxury Gym Bottle</h3>      
+<span class="rating">⭐ 4.6</span><div class="price">      
+₹199 <span class="old">₹599</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Luxury Gym Bottle',199)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Luxury Gym Bottle',199)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Running Shoes" data-category="Footwear"><button class="wish" onclick="toggleWish(this,'Running Shoes',1199)">      
+♡      
+</button><div class="photo">👟</div><h3>Premium Running Shoes</h3>      
+<span class="rating">⭐ 4.5</span><div class="price">      
+₹1,199 <span class="old">₹2,499</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Premium Running Shoes',1199)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Premium Running Shoes',1199)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Bluetooth Speaker" data-category="Audio"><button class="wish" onclick="toggleWish(this,'Bluetooth Speaker',699)">      
+♡      
+</button><div class="photo">🔊</div><h3>Luxury Bluetooth Speaker</h3>      
+<span class="rating">⭐ 4.2</span><div class="price">      
+₹699 <span class="old">₹1,299</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Luxury Bluetooth Speaker',699)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Luxury Bluetooth Speaker',699)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Gaming Headphones" data-category="Audio"><button class="wish" onclick="toggleWish(this,'Gaming Headphones',1299)">      
+♡      
+</button><div class="photo">🎧</div><h3>Gaming Headphones</h3>      
+<span class="rating">⭐ 4.6</span><div class="price">      
+₹1,299 <span class="old">₹2,499</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Gaming Headphones',1299)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Gaming Headphones',1299)">      
+BUY NOW      
+</button>      
+</div></div><div class="product" data-name="Gym Gloves" data-category="Fitness"><button class="wish" onclick="toggleWish(this,'Gym Gloves',249)">      
+♡      
+</button><div class="photo">🥊</div><h3>Professional Gym Gloves</h3>      
+<span class="rating">⭐ 4.7</span><div class="price">      
+₹249 <span class="old">₹499</span>      
+</div><div class="delivery">🚚 Free Delivery</div><div class="actions">      
+<button class="add" onclick="addToCart('Professional Gym Gloves',249)">      
+ADD CART      
+</button><button class="buy" onclick="buyNow('Professional Gym Gloves',249)">      
+BUY NOW      
+</button>      
+</div></div></div>      
+</section></div><footer>      
+<h2>🌿 DEV•CART</h2>      
+<p>Luxury shopping with a modern experience.</p>      
+<p>© 2026 DEV•CART — All Rights Reserved</p>      
+</footer><!-- OVERLAY --><div id="overlay" class="overlay" onclick="closePanels()"></div><!-- CART --><div id="cartPanel" class="panel"><div class="panelHead">      
+<h2>🛒 My Cart</h2>      
+<button class="close" onclick="closePanels()">×</button>      
+</div><div id="cartItems"></div><div id="cartTotal" class="total">      
+Total: ₹0      
+</div><button class="checkoutBtn" onclick="openCheckout()">      
+PROCEED TO CHECKOUT      
+</button></div><!-- WISHLIST --><div id="wishlistPanel" class="panel"><div class="panelHead">      
+<h2>♡ Wishlist</h2>      
+<button class="close" onclick="closePanels()">×</button>      
+</div><div id="wishlistItems"></div></div><!-- LOGIN --><div id="loginModal" class="modal"><div class="modalBox"><button class="close" onclick="closeLogin()">×</button>  <h2>Welcome to DEV•CART</h2><input id="loginEmail" type="email" placeholder="Email"><input id="loginPassword" type="password" placeholder="Password"><button class="goldBtn" onclick="loginUser()">      
+LOGIN      
+</button><button class="goldBtn" onclick="createAccount()">      
+CREATE ACCOUNT      
+</button></div></div><!-- CHECKOUT --><div id="checkoutModal" class="modal"><div class="modalBox"><button class="close" onclick="closeCheckout()">×</button>  <h2>📦 Delivery Details</h2><input id="customerName" placeholder="Full Name"><input id="customerMobile" type="tel" placeholder="Mobile Number"><textarea id="customerAddress" placeholder="Complete Address"></textarea><input id="customerPin" type="text" placeholder="PIN Code"><button class="goldBtn" onclick="placeOrder()">      
+PLACE ORDER ON WHATSAPP      
+</button></div></div><script>  let cart=[];    
+let wishlist=[];  const whatsappNumber="917980460725";  function addToCart(name,price){
+
+let item=cart.find(x=>x.name===name);
+
+if(item){
+item.qty++;
+}else{
+cart.push({
+name:name,
+price:price,
+qty:1
+});
+}
+
+updateCart();
+openCart();
+
+}
+
+function buyNow(name,price){
+
+cart=[{
+name:name,
+price:price,
+qty:1
+}];
+
+updateCart();
+openCheckout();
+
+}
+
+function updateCart(){
+
+let html="";
+let total=0;
+let count=0;
+
+if(cart.length===0){
+
+html="<p>Your cart is empty.</p>";
+
+}else{
+
+cart.forEach((item,index)=>{
+
+total+=item.price*item.qty;
+count+=item.qty;
+
+html+=`
+
+<div class="cartItem">  <b>${item.name}</b>  <p>₹${item.price} × ${item.qty}</p>  <div class="qty">  <button onclick="minusItem(${index})">−</button>  <span style="padding:0 12px">      
+${item.qty}      
+</span>  <button onclick="plusItem(${index})">+</button>  <button class="remove"      
+onclick="removeItem(${index})">  
+Remove  
+</button>  </div>  </div>      
+`;  });  }  document.getElementById("cartItems").innerHTML=html;
+
+document.getElementById("cartTotal").innerText=
+"Total: ₹"+total;
+
+document.getElementById("cartCount").innerText=count;
+
+}
+
+function plusItem(index){
+
+cart[index].qty++;
+updateCart();
+
+}
+
+function minusItem(index){
+
+cart[index].qty--;
+
+if(cart[index].qty<=0){
+cart.splice(index,1);
+}
+
+updateCart();
+
+}
+
+function removeItem(index){
+
+cart.splice(index,1);
+updateCart();
+
+}
+
+function openCart(){
+
+closePanels();
+
+document.getElementById("cartPanel")
+.classList.add("open");
+
+document.getElementById("overlay")
+.classList.add("show");
+
+}
+
+function toggleWish(button,name,price){
+
+let index=wishlist.findIndex(x=>x.name===name);
+
+if(index===-1){
+
+wishlist.push({
+name:name,
+price:price
+});
+
+button.innerText="♥";
+
+}else{
+
+wishlist.splice(index,1);
+button.innerText="♡";
+
+}
+
+updateWishlist();
+
+}
+
+function updateWishlist(){
+
+document.getElementById("wishCount").innerText=
+wishlist.length;
+
+let box=document.getElementById("wishlistItems");
+
+if(wishlist.length===0){
+
+box.innerHTML="<p>Your wishlist is empty.</p>";
+return;
+
+}
+
+let html="";
+
+wishlist.forEach((item,index)=>{
+
+html+=`
+
+<div class="wishItem">  <b>${item.name}</b>  <p>₹${item.price}</p>  <button class="add"      
+style="padding:9px;border:0;border-radius:6px"      
+onclick="addWishToCart(${index})">    
+ADD TO CART    
+</button>  <button class="remove"      
+onclick="removeWish(${index})">  
+Remove  
+</button>  </div>      
+`;  });  box.innerHTML=html;  }
+
+function addWishToCart(index){
+
+let item=wishlist[index];
+
+addToCart(item.name,item.price);
+
+}
+
+function removeWish(index){
+
+wishlist.splice(index,1);
+updateWishlist();
+
+}
+
+function openWishlist(){
+
+closePanels();
+
+document.getElementById("wishlistPanel")
+.classList.add("open");
+
+document.getElementById("overlay")
+.classList.add("show");
+
+updateWishlist();
+
+}
+
+function closePanels(){
+
+document.getElementById("cartPanel")
+.classList.remove("open");
+
+document.getElementById("wishlistPanel")
+.classList.remove("open");
+
+document.getElementById("overlay")
+.classList.remove("show");
+
+}
+
+function openLogin(){
+
+document.getElementById("loginModal")
+.classList.add("show");
+
+}
+
+function closeLogin(){
+
+document.getElementById("loginModal")
+.classList.remove("show");
+
+}
+
+function loginUser(){
+
+let email=document.getElementById("loginEmail").value.trim();
+let password=document.getElementById("loginPassword").value;
+
+if(!email||!password){
+
+alert("Please enter email and password.");
+return;
+
+}
+
+alert("Login demo successful!");
+closeLogin();
+
+}
+
+function createAccount(){
+
+let email=document.getElementById("loginEmail").value.trim();
+let password=document.getElementById("loginPassword").value;
+
+if(!email||!password){
+
+alert("Please enter email and password.");
+return;
+
+}
+
+alert("Account created successfully!");
+closeLogin();
+
+}
+
+function openCheckout(){
+
+if(cart.length===0){
+
+alert("Please add a product to cart first.");
+return;
+
+}
+
+closePanels();
+
+document.getElementById("checkoutModal")
+.classList.add("show");
+
+}
+
+function closeCheckout(){
+
+document.getElementById("checkoutModal")
+.classList.remove("show");
+
+}
+
+function placeOrder(){
+
+let name=
+document.getElementById("customerName").value.trim();
+
+let mobile=
+document.getElementById("customerMobile").value.trim();
+
+let address=
+document.getElementById("customerAddress").value.trim();
+
+let pin=
+document.getElementById("customerPin").value.trim();
+
+if(!name||!mobile||!address||!pin){
+
+alert("Please fill all delivery details.");
+return;
+
+}
+
+let message="DEV•CART ORDER%0A%0A";
+
+message+="Customer: "+encodeURIComponent(name)+"%0A";
+message+="Mobile: "+encodeURIComponent(mobile)+"%0A";
+message+="Address: "+encodeURIComponent(address)+"%0A";
+message+="PIN: "+encodeURIComponent(pin)+"%0A%0A";
+
+message+="PRODUCTS:%0A";
+
+let total=0;
+
+cart.forEach(item=>{
+
+total+=item.price*item.qty;
+
+message+=encodeURIComponent(
+item.name+
+" × "+
+item.qty+
+" = ₹"+
+(item.price*item.qty)
+)+"%0A";
+
+});
+
+message+="%0ATotal: ₹"+total;
+
+window.open(
+"https://wa.me/"+whatsappNumber+
+"?text="+message,
+"_blank"
+);
+
+}
+
+function searchProducts(){
+
+let query=
+document.getElementById("searchBox")
+.value
+.toLowerCase()
+.trim();
+
+document.querySelectorAll(".product")
+.forEach(product=>{
+
+let name=
+product.dataset.name.toLowerCase();
+
+product.style.display=
+name.includes(query) ? "" : "none";
+
+});
+
+}
+
+function filterCategory(category){
+
+document.querySelectorAll(".product")
+.forEach(product=>{
+
+product.style.display=
+product.dataset.category===category
+? ""
+: "none";
+
+});
+
+document.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+function scrollProducts(){
+
+document.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+updateCart();
+updateWishlist();
+
+</script></body>
+
+</html>
