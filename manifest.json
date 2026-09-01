@@ -1,0 +1,19 @@
+{
+  "name": "Dev Editx",
+  "short_name": "DevEditx",
+  "description": "Anime Edits and Web Showcase by Dev Editx",
+  "start_url": "/Dev/",
+  "scope": "/Dev/",
+  "display": "standalone",
+  "background_color": "#050608",
+  "theme_color": "#ef4444",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/860/860330.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
