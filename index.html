@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>DEV // EDITX</title>
 
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@800&display=swap" rel="stylesheet">
+
+  <!-- Firebase App & Auth SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
   <style>
     *, *::before, *::after {
@@ -26,14 +31,15 @@
       font-family: 'Space Grotesk', sans-serif;
     }
 
+    /* Video Background Container */
     .bg-container {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 0;
-      pointer-events: none !important;
+      z-index: 1;
+      pointer-events: none;
     }
 
     #itachiVideo {
@@ -42,180 +48,211 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      pointer-events: none !important;
+      pointer-events: none;
     }
 
     .edge-gradient {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(5,6,8,0.75) 0%, rgba(5,6,8,0.2) 25%, rgba(5,6,8,0.5) 60%, rgba(5,6,8,0.95) 100%);
-      pointer-events: none !important;
+      background: linear-gradient(180deg, rgba(5,6,8,0.7) 0%, rgba(5,6,8,0) 25%, rgba(5,6,8,0.4) 65%, rgba(5,6,8,0.9) 100%);
+      pointer-events: none;
     }
 
-    /* Top Bar */
+    /* Top Bar Navigation */
     .top-bar {
       position: fixed;
-      top: 18px;
-      left: 16px;
-      right: 16px;
+      top: 20px;
+      left: 18px;
+      right: 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 999999 !important;
-      pointer-events: auto !important;
+      z-index: 9999;
+      pointer-events: auto;
     }
 
     .brand-tag {
       font-family: 'Syne', sans-serif;
-      font-size: 0.85rem;
+      font-size: 1rem;
       font-weight: 800;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: #ef4444;
-      text-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+      text-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
       user-select: none;
-      white-space: nowrap;
-      pointer-events: none;
     }
 
     .auth-buttons-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      pointer-events: auto !important;
     }
 
     .nav-btn {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 10px 15px;
+      gap: 6px;
+      padding: 8px 14px;
       border-radius: 20px;
       font-size: 0.75rem;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: 0.5px;
       cursor: pointer;
       border: 1px solid transparent;
+      transition: all 0.2s ease;
       user-select: none;
       font-family: 'Space Grotesk', sans-serif;
       white-space: nowrap;
-      text-decoration: none;
-      pointer-events: auto !important;
+    }
+
+    .nav-btn svg, .nav-btn span {
+      pointer-events: none;
     }
 
     .btn-elite {
-      background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(245, 158, 11, 0.4) 100%);
       border: 1px solid #f59e0b;
+      color: #fde047;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+    }
+
+    .btn-elite:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
       color: #ffffff;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+      transform: translateY(-1px);
     }
 
     .btn-google {
       background: #ffffff;
       color: #0f172a;
       border-color: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
     }
 
-    .google-icon-svg {
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      vertical-align: middle;
-      pointer-events: none;
-      flex-shrink: 0;
+    .btn-logout {
+      background: #881337;
+      color: #ffffff;
+      border-color: #4c0519;
+      display: none;
+      box-shadow: 0 0 15px rgba(136, 19, 55, 0.6);
     }
 
+    .nav-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .nav-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Headline Overlay - Font Size Chota Kar Diya Gaya Hai */
     .headline-wrap {
       position: fixed;
-      top: 9vh;
+      top: 8.5vh;
       left: 6vw;
-      z-index: 1;
+      z-index: 20;
       max-width: 80vw;
-      pointer-events: none !important;
+      pointer-events: none;
     }
 
     .headline-wrap h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(1.9rem, 5.2vw, 3.4rem);
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -1px;
+      font-size: clamp(1.4rem, 3.8vw, 2.3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
       text-transform: uppercase;
-      text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
-      pointer-events: none !important;
+      color: #ffffff;
+      text-shadow: 0 3px 15px rgba(0, 0, 0, 0.9);
     }
 
     .headline-wrap h1 span {
-      color: #ef4444;
-      text-shadow: 0 0 25px rgba(239, 68, 68, 0.85);
-      pointer-events: none !important;
+      color: #ff4d4d;
+      text-shadow: 0 0 25px rgba(239, 68, 68, 0.9), 0 2px 10px rgba(0,0,0,0.9);
     }
 
+    /* Pure Transparent Bottom Subtitles & Description */
     .bottom-info {
       position: fixed;
-      bottom: 86px;
+      bottom: 84px;
       left: 6vw;
       right: 6vw;
-      z-index: 1;
-      pointer-events: none !important;
+      z-index: 20;
+      pointer-events: none;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-width: 650px;
+      max-width: 680px;
+      background: transparent;
+      padding: 0;
+      border: none;
+      box-shadow: none;
     }
 
     .quote-badge {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      font-size: 0.82rem;
-      font-weight: 900;
-      letter-spacing: 2.2px;
-      color: #ef4444;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fbbf24;
       text-transform: uppercase;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 12px rgba(239, 68, 68, 0.6);
       width: fit-content;
-      pointer-events: none !important;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      padding: 4px 10px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
     }
 
     .quote-badge::before {
       content: '';
-      width: 7px;
-      height: 7px;
-      background: #ef4444;
+      width: 6px;
+      height: 6px;
+      background: #fbbf24;
       border-radius: 50%;
-      box-shadow: 0 0 10px #ef4444;
+      box-shadow: 0 0 8px #fbbf24;
     }
 
     .dialogue-text {
-      font-size: clamp(0.95rem, 2.3vw, 1.15rem);
-      font-weight: 800;
-      line-height: 1.4;
+      font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+      font-weight: 700;
+      line-height: 1.45;
       color: #ffffff;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 0 5px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 4px rgba(0, 0, 0, 0.8);
+      letter-spacing: 0.2px;
+    }
+
+    .cta-subtext {
+      font-size: 0.78rem;
+      color: #f1f5f9;
+      font-weight: 600;
       letter-spacing: 0.3px;
-      pointer-events: none !important;
+      line-height: 1.5;
+      pointer-events: auto;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 4px rgba(0, 0, 0, 0.8);
     }
 
-    .cta-prominent {
-      font-size: clamp(1rem, 2.7vw, 1.25rem);
-      color: #ffffff;
-      font-weight: 900;
-      letter-spacing: 0.4px;
-      line-height: 1.35;
-      text-shadow: 0 3px 14px rgba(0, 0, 0, 0.98), 0 0 6px rgba(0, 0, 0, 0.9);
-      margin-top: 2px;
-      pointer-events: none !important;
+    .cta-subtext b {
+      color: #ff5252;
+      font-weight: 800;
     }
 
-    .cta-prominent b {
-      color: #ef4444;
-      font-weight: 900;
-      text-shadow: 0 0 14px rgba(239, 68, 68, 0.8), 0 2px 10px rgba(0, 0, 0, 0.95);
+    .cta-subtext .highlight-gold {
+      color: #fde047;
+      font-weight: 800;
+      text-shadow: 0 0 8px rgba(253, 224, 71, 0.5);
     }
 
-    /* Social Dock */
+    /* Floating Social Dock */
     .social-dock {
       position: fixed;
       bottom: 22px;
@@ -224,38 +261,52 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 999999 !important;
-      pointer-events: auto !important;
+      z-index: 9999;
+      pointer-events: auto;
     }
 
     .social-links {
       display: flex;
       align-items: center;
       gap: 12px;
-      pointer-events: auto !important;
     }
 
     .social-btn {
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: rgba(18, 20, 26, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(18, 20, 26, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #e2e8f0;
+      color: #ffffff;
       text-decoration: none;
+      transition: all 0.25s ease;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
-      pointer-events: auto !important;
+    }
+
+    .social-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
 
     .contact-btn {
       background: #ef4444;
       color: #ffffff;
-      font-size: 0.8rem;
-      font-weight: 800;
+      font-size: 0.78rem;
+      font-weight: 700;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       text-decoration: none;
@@ -265,54 +316,53 @@
       align-items: center;
       gap: 8px;
       box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-      pointer-events: auto !important;
-      cursor: pointer;
+      transition: all 0.25s ease;
     }
 
-    /* CHECKBOX TOGGLE SYSTEM (NO JS, NO HASH, 100% RELIABLE) */
-    #modalToggle {
-      display: none;
-    }
-
-    .toggle-modal-wrap {
+    /* Watermark */
+    .watermark-bg {
       position: fixed;
       inset: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 3vw 8vh 3vw;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(5.5rem, 18vw, 18rem);
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.04);
+      line-height: 0.75;
+      letter-spacing: -4px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Modal */
+    .custom-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 2147483647 !important;
+      z-index: 99999;
       padding: 16px;
     }
 
-    /* When Checkbox is Checked -> Show Modal */
-    #modalToggle:checked ~ .toggle-modal-wrap {
+    .custom-modal.active {
       display: flex !important;
     }
 
-    /* Backdrop Click Area (Closes Modal) */
-    .backdrop-closer {
-      position: absolute;
-      inset: 0;
+    .payment-card {
       width: 100%;
-      height: 100%;
-      cursor: pointer;
-      z-index: 1;
-    }
-
-    .modal-box {
-      position: relative;
-      z-index: 2;
+      max-width: 380px;
       background: #0d1117;
       border: 1px solid rgba(245, 158, 11, 0.4);
       border-radius: 16px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.95);
       overflow: hidden;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.25);
       display: flex;
       flex-direction: column;
     }
@@ -333,21 +383,21 @@
       letter-spacing: 1px;
     }
 
-    .close-icon-btn {
+    .close-btn {
+      background: none;
+      border: none;
       color: #cbd5e1;
-      font-size: 2rem;
+      font-size: 1.5rem;
       cursor: pointer;
       line-height: 1;
-      padding: 0 4px;
-      user-select: none;
     }
 
     .pay-body {
-      padding: 16px;
+      padding: 18px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .pass-discount-banner {
@@ -359,19 +409,18 @@
       font-size: 0.72rem;
       color: #fde68a;
       text-align: center;
-      font-weight: 700;
-      line-height: 1.4;
+      font-weight: 600;
     }
 
     .qr-frame {
       background: #ffffff;
-      padding: 8px;
+      padding: 10px;
       border-radius: 12px;
-      width: 160px;
-      height: 160px;
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 170px;
+      height: 170px;
     }
 
     .qr-frame img {
@@ -381,13 +430,18 @@
     }
 
     .user-name-badge {
+      display: inline-block;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 5px 14px;
+      padding: 6px 16px;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: #fbbf24;
       font-weight: 800;
+      letter-spacing: 0.8px;
+      text-align: center;
+      user-select: none;
+      pointer-events: none;
     }
 
     .direct-upi-btn {
@@ -397,164 +451,225 @@
       color: #ffffff;
       border-radius: 8px;
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       text-align: center;
       text-decoration: none;
-      display: block;
+      letter-spacing: 0.5px;
     }
 
-    .whatsapp-confirm-btn {
+    .activate-confirm-btn {
       width: 100%;
-      background: #25D366;
-      color: #ffffff;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.78rem;
-      text-align: center;
-      text-decoration: none;
-      display: block;
-    }
-
-    #copyToast {
-      position: fixed;
-      top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #10b981;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 30px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      display: none;
-      z-index: 2147483647;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 9px;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div id="copyToast">📋 Text Copied! Paste it in Instagram DM.</div>
-
-  <!-- Hidden Native Checkbox State -->
-  <input type="checkbox" id="modalToggle">
-
-  <!-- Top Bar -->
+  <!-- Top Bar Navigation -->
   <header class="top-bar">
     <div class="brand-tag">DEV // EDITX</div>
     <div class="auth-buttons-group">
-      <!-- Label directly triggers Checkbox Toggle -->
-      <label for="modalToggle" class="nav-btn btn-elite">
-        <span>👑 BUY ELITE PASS (₹1)</span>
-      </label>
+      <button type="button" class="nav-btn btn-elite" onclick="openPaymentModal()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+        <span>BUY ELITE PASS (₹99)</span>
+      </button>
 
-      <a href="https://iamdev005.github.io/Dev/" target="_blank" class="nav-btn btn-google">
-        <svg class="google-icon-svg" viewBox="0 0 24 24">
+      <!-- Sirf GOOGLE text -->
+      <button type="button" class="nav-btn btn-google" id="btnGoogle" onclick="loginWithGoogle()">
+        <svg viewBox="0 0 24 24">
           <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
           <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
           <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.1s.7 5.4 1.9 7.8l3.7-2.9z"/>
           <path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16.5C3.7 20.2 7.5 23.5 12 23.5z"/>
         </svg>
         <span>GOOGLE</span>
-      </a>
+      </button>
+
+      <button type="button" class="nav-btn btn-logout" id="btnLogout" onclick="logoutUser()">
+        <span id="logoutText">LOGOUT</span>
+      </button>
     </div>
   </header>
 
-  <!-- Video Background -->
+  <!-- Background Video Layers -->
   <div class="bg-container">
     <div class="edge-gradient"></div>
-    <video id="itachiVideo" src="https://files.catbox.moe/mr91vc.mp4" autoplay loop muted playsinline></video>
+    <video 
+      id="itachiVideo" 
+      src="https://files.catbox.moe/mr91vc.mp4" 
+      autoplay 
+      loop 
+      muted 
+      playsinline 
+      webkit-playsinline 
+      preload="auto">
+    </video>
   </div>
 
-  <!-- Headline -->
+  <!-- Headline Overlay (Resized Compact) -->
   <div class="headline-wrap">
-    <h1>FORGIVE ME<br>SASUKE...<br><span>THIS IS THE END.</span></h1>
+    <h1>
+      FORGIVE ME<br>
+      SASUKE...<br>
+      <span>THIS IS THE END.</span>
+    </h1>
   </div>
 
-  <!-- Bottom Info -->
+  <!-- Background Watermark -->
+  <div class="watermark-bg">
+    <span>ITACHI</span>
+    <span>07</span>
+  </div>
+
+  <!-- Transparent Subtitle Quotes & Promo -->
   <div class="bottom-info">
-    <div class="quote-badge">SHADOW OF PEACE</div>
-    <div class="dialogue-text">"Self-sacrifice... a nameless shinobi who protects peace within its shadow."</div>
-    <div class="cta-prominent">Want a custom anime video edit or website like this? <b>DM me on Instagram!</b></div>
+    <div class="quote-badge">SHADOW OF PEACE // ITACHI UCHIHA</div>
+    <div class="dialogue-text">
+      "No single thing is perfect in itself. That's why we're born to attract other things to make up for what we lack. Self-sacrifice is the essence of a true shinobi who guards peace within the abyss."
+    </div>
+
+    <div class="cta-subtext">
+      🔥 <span class="highlight-gold">Custom Anime Edits • High-FPS AMVs • Cinematic Motion Graphics</span><br>
+      Apne YouTube Shorts, Reels ya anime edits ke liye high-tier visuals chahiye? <span class="highlight-gold">Elite Pass</span> holders ko milta hai <b>50% OFF</b> + Priority Delivery! Work ke liye <b>Instagram DM</b> karein.
+    </div>
   </div>
 
-  <!-- Social Dock -->
+  <!-- Floating Social Dock -->
   <nav class="social-dock">
     <div class="social-links">
-      <a href="https://youtube.com/@dev_editx_1?si=IAKw2WxhhU6kw_zy" target="_blank" class="social-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      <a href="https://youtube.com/@dev_editx_1?si=IAKw2WxhhU6kw_zy" target="_blank" rel="noopener" class="social-btn" aria-label="YouTube Channel">
+        <svg viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
       </a>
-      <a href="https://instagram.com/i_am_dev_005" target="_blank" class="social-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+
+      <a href="https://instagram.com/i_am_dev_005" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram Profile">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
       </a>
     </div>
 
-    <a onclick="openInstaDM()" class="contact-btn">
+    <a href="https://ig.me/m/i_am_dev_005" target="_blank" rel="noopener" class="contact-btn">
       <span>DM FOR WORK</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
     </a>
   </nav>
 
-  <!-- PURE CHECKBOX TOGGLED MODAL (Zero-Failure) -->
-  <div class="toggle-modal-wrap">
-    <!-- Bahar black screen par tap karne se close hoga -->
-    <label for="modalToggle" class="backdrop-closer"></label>
-
-    <div class="modal-box">
+  <!-- Clean Modal (QR + Name Only) -->
+  <div class="custom-modal" id="paymentModal" onclick="closeModalOnOutside(event)">
+    <div class="payment-card">
       <div class="modal-header">
         <div class="modal-title">⚡ UPGRADE TO ELITE PASS</div>
-        <!-- (×) button par tap karne se close hoga -->
-        <label for="modalToggle" class="close-icon-btn">&times;</label>
+        <button type="button" class="close-btn" onclick="closePaymentModal()">&times;</button>
       </div>
 
       <div class="pay-body">
         <div class="pass-discount-banner">
-          🎟️ <b>TRIAL OFFER: ₹1 ONLY</b><br>
-          Includes 7-Day Access & Instant 50% Off
+          🎟️ <b>Validity: 7 Days</b> | Instant 50% discount on edits
         </div>
 
         <div class="qr-frame">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=upi://pay?pa=devtatwa2010@naviaxis%26pn=DEB%20KUMAR%20TATWA%26am=1%26cu=INR%26tn=ElitePassTest" alt="QR Code" />
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=upi://pay?pa=devtatwa2010@naviaxis%26pn=DEB%20KUMAR%20TATWA%26am=99%26cu=INR" alt="UPI QR Code" />
         </div>
 
         <div class="user-name-badge">
           <span>DEB KUMAR TATWA</span>
         </div>
 
-        <a href="upi://pay?pa=devtatwa2010@naviaxis&pn=DEB%20KUMAR%20TATWA&am=1&cu=INR&tn=ElitePassTest" class="direct-upi-btn">
-          ⚡ PAY ₹1 VIA ANY UPI APP
+        <a href="upi://pay?pa=devtatwa2010@naviaxis&pn=DEB%20KUMAR%20TATWA&am=99&cu=INR&tn=ElitePass" class="direct-upi-btn">
+          PAY ₹99 VIA UPI APP
         </a>
 
-        <a href="https://wa.me/917980460725?text=Hi%20Dev,%20I%20have%20completed%20the%20%E2%82%B91%20payment%20for%20the%20Elite%20Pass.%20Attached%20is%20my%20screenshot!" target="_blank" class="whatsapp-confirm-btn">
-          VERIFY PAYMENT VIA WHATSAPP
-        </a>
+        <button type="button" class="activate-confirm-btn" onclick="notifyPaymentComplete()">
+          Paid ₹99? Send Screenshot on Instagram
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    function openInstaDM() {
-      const defaultText = "Hi Dev, I saw your work on DEV // EDITX and I am interested in getting a custom video edit / website!";
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(defaultText).then(() => {
-          showToast();
-        }).catch(() => {});
-      }
-      setTimeout(() => {
-        window.open("https://ig.me/m/i_am_dev_005", "_blank");
-      }, 500);
+    /* Exact Verified Working Firebase Config */
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6oCTInaVg6Sq-rf29FMcVrrlDH60EA8U",
+      authDomain: "dev--editx.firebaseapp.com",
+      projectId: "dev--editx",
+      storageBucket: "dev--editx.firebasestorage.app",
+      messagingSenderId: "694298313083",
+      appId: "1:694298313083:web:36da2257a5020380393dde",
+      measurementId: "G-K0967PDBSG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    const btnGoogle = document.getElementById('btnGoogle');
+    const btnLogout = document.getElementById('btnLogout');
+    const logoutText = document.getElementById('logoutText');
+
+    /* Auto Play Video */
+    const video = document.getElementById('itachiVideo');
+    if (video) {
+      video.muted = true;
+      video.play().catch(() => {});
     }
 
-    function showToast() {
-      const toast = document.getElementById('copyToast');
-      if (toast) {
-        toast.style.display = 'block';
-        setTimeout(() => {
-          toast.style.display = 'none';
-        }, 3000);
+    /* Auth State Listener */
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        btnGoogle.style.display = 'none';
+        btnLogout.style.display = 'inline-flex';
+        const name = user.displayName ? user.displayName.split(' ')[0] : 'USER';
+        logoutText.innerText = `LOGOUT (${name.toUpperCase()})`;
+      } else {
+        btnGoogle.style.display = 'inline-flex';
+        btnLogout.style.display = 'none';
       }
+    });
+
+    async function loginWithGoogle() {
+      try {
+        await auth.signInWithPopup(googleProvider);
+      } catch (error) {
+        if (error.code !== "auth/popup-closed-by-user") {
+          alert("Google Login Error: " + error.message);
+        }
+      }
+    }
+
+    async function logoutUser() {
+      if (confirm("Logout karna chahte hain?")) {
+        await auth.signOut();
+      }
+    }
+
+    /* Modal Controls */
+    function openPaymentModal() {
+      document.getElementById('paymentModal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.remove('active');
+    }
+
+    function closeModalOnOutside(event) {
+      if (event.target.id === 'paymentModal') {
+        closePaymentModal();
+      }
+    }
+
+    function notifyPaymentComplete() {
+      closePaymentModal();
+      window.open("https://ig.me/m/i_am_dev_005?text=Hey%20Dev,%20maine%20Elite%20Pass%20(99)%20ka%20payment%20kar%20diya%20hai.%20Check%20screenshot.", "_blank");
     }
   </script>
 </body>
 </html>
-
